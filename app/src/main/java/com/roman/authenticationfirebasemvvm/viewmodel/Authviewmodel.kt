@@ -1,31 +1,36 @@
 package com.roman.authenticationfirebasemvvm.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseUser
+import androidx.lifecycle.viewModelScope
 import com.roman.authenticationfirebasemvvm.repository.AuthenticationRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class Authviewmodel : ViewModel(){
+class Authviewmodel() : ViewModel(){
     private var repository = AuthenticationRepository()
     private var userData = repository.getfirebaseusermutablelivedata()
-    private var loggedStatus = repository.getUserloogedmutablelivedata()
 
-    fun getuserData() : MutableLiveData<FirebaseUser> {
-        return userData
+    fun getuserData() = userData
+
+
+    fun register(email : String , password : String) = viewModelScope.launch(Dispatchers.IO){
+        try{
+            repository.register(email, password)
+        }catch(e : Exception){
+            println(e.message)
+        }
+
     }
 
-    fun getloggedStatus() : MutableLiveData<Boolean>{
-        return loggedStatus
-    }
+    fun signIn (email : String, password: String) = viewModelScope.launch(Dispatchers.IO){
+        try{
+            repository.login(email, password)
+        }catch(e : Exception){
+            println(e.message)
+        }
 
-    fun register(email : String , password : String){
-        repository.register(email, password)
     }
-
-    fun signIn (email : String, password: String){
-        repository.login(email, password)
-    }
-    fun signout(){
+    fun signout() = viewModelScope.launch(Dispatchers.IO){
         repository.signOut()
     }
 }

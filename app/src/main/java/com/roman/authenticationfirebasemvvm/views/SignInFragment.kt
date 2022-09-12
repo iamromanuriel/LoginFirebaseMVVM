@@ -5,9 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.roman.authenticationfirebasemvvm.R
@@ -23,8 +24,8 @@ class SignInFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getuserData().observe(this, Observer {
-            if(it != null){
+        viewModel.getuserData().observe(this, Observer { datauser ->
+            if(datauser != null){
                 navController.navigate(R.id.action_signInFragment_to_signOutFragment)
             }
         })
@@ -46,7 +47,7 @@ class SignInFragment : Fragment() {
         binding.buttonSignIn.setOnClickListener {
             var emailinput = binding.editEmail.text.toString()
             var passwordinput = binding.editPassword.text.toString()
-            viewModel.register(emailinput, passwordinput)
+            viewModel.signIn(emailinput, passwordinput)
         }
         binding.goSignUp.setOnClickListener {
             navController.navigate(R.id.action_signInFragment_to_signUpFragment)
@@ -54,13 +55,5 @@ class SignInFragment : Fragment() {
 
     }
 
-    companion object {
 
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SignInFragment().apply {
-
-            }
-    }
 }

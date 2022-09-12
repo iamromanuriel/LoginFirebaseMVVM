@@ -5,38 +5,35 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 class AuthenticationRepository {
-    private lateinit var firebaseusermutablelivedata : MutableLiveData<FirebaseUser>
-    private lateinit var auth : FirebaseAuth
-    private lateinit var userloggedmutablelivedata : MutableLiveData<Boolean>
+    private var firebaseusermutablelivedata : MutableLiveData<FirebaseUser>
+    private var auth : FirebaseAuth
+
 
     constructor(){
         firebaseusermutablelivedata = MutableLiveData<FirebaseUser>()
-        userloggedmutablelivedata = MutableLiveData<Boolean>()
         auth = FirebaseAuth.getInstance()
-
         if(auth.currentUser != null){
             firebaseusermutablelivedata.postValue(auth.currentUser)
         }
 
     }
 
-    fun getUserloogedmutablelivedata () : MutableLiveData<Boolean>{
-        return userloggedmutablelivedata
-    }
 
-    fun getfirebaseusermutablelivedata() : MutableLiveData<FirebaseUser>{
-        return firebaseusermutablelivedata
-    }
+    fun getfirebaseusermutablelivedata() = firebaseusermutablelivedata
 
-    fun register(email : String , password : String){
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener{
-            if(it.isSuccessful){
-                firebaseusermutablelivedata.postValue(auth.currentUser)
+
+    suspend fun register(email : String , password : String){
+        try{
+            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener{
+                println("User created")
             }
+        }catch (e : Exception){
+            println(e.message.toString())
         }
+
     }
 
-    fun login (email : String , password : String){
+    suspend fun login (email : String , password : String){
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
             if(it.isSuccessful){
                 firebaseusermutablelivedata.postValue(auth.currentUser)
@@ -44,8 +41,7 @@ class AuthenticationRepository {
         }
     }
 
-    fun signOut(){
+    suspend fun signOut(){
         auth.signOut()
-        userloggedmutablelivedata.postValue(true)
     }
 }

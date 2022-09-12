@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.roman.authenticationfirebasemvvm.R
-import com.roman.authenticationfirebasemvvm.databinding.FragmentSignInBinding
 import com.roman.authenticationfirebasemvvm.databinding.FragmentSignOutBinding
 import com.roman.authenticationfirebasemvvm.viewmodel.Authviewmodel
 
@@ -28,7 +27,7 @@ class SignOutFragment : Fragment() {
             if(it != null){
                 binding.showemail.text =it.email
             }else{
-                navController.navigate(R.id.action_signOutFragment_to_signInFragment)
+                binding.btnSignOut.visibility = View.GONE
             }
         })
     }
@@ -46,13 +45,9 @@ class SignOutFragment : Fragment() {
         navController = Navigation.findNavController(view)
         binding.btnSignOut.setOnClickListener {
             viewModel.signout()
+            navController.navigate(R.id.action_signOutFragment_to_signInFragment)
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SignOutFragment().apply {
-            }
-    }
+
 }
